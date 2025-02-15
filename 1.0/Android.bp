@@ -1,0 +1,17 @@
+hidl_package_root {
+    name: "vendor.v.vehicle",
+    path: "vendor/v/hardware/interfaces/automotive/vehicle",
+}
+
+hidl_interface {
+    name: "vendor.v.vehicle@1.0",
+    root: "vendor.v.vehicle",
+    srcs: [
+        "types.hal",
+    ],
+    interfaces: [
+        "android.hardware.automotive.vehicle@2.0",
+        "android.hidl.base@1.0",
+    ],
+    gen_java: true,
+}

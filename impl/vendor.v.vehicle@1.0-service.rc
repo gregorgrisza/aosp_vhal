@@ -1,0 +1,4 @@
+service v-vehicle-hal-1.0 /vendor/bin/hw/vendor.v.vehicle@1.0-service
+    class hal
+    user vehicle_network
+    group system

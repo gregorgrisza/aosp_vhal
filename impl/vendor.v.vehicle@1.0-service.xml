@@ -2,7 +2,7 @@
     <!-- 
         Use override="true" attribute if HAL hardcoded in device manifest.xml
     -->
-    <hal format="hidl">
+    <hal format="hidl" override="true">
         <name>android.hardware.automotive.vehicle</name>
         <transport>hwbinder</transport>
         <version>2.0</version>

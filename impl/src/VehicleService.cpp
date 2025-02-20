@@ -6,29 +6,25 @@
 
 #include <hidl/HidlTransportSupport.h>
 
-#include <vhal_v2_0/EmulatedVehicleConnector.h>
-#include <vhal_v2_0/EmulatedVehicleHal.h>
 #include <vhal_v2_0/VehicleHalManager.h>
-#include <vhal_v2_0/VehicleEmulator.h>
 
+#include "VehicleHalClient.h"
 #include "VendorVehicleHal.h"
 
 using namespace std::chrono_literals;
-
-using namespace vendor::v::vehicle::V1_0;
 
 using namespace android;
 using namespace android::hardware;
 using namespace android::hardware::automotive::vehicle::V2_0;
 
+
 int main(int /* argc */, char* /* argv */ []) {
     auto store = std::make_unique<vhal_v2_0::VehiclePropertyStore>();
-    auto connector = std::make_unique<vhal_v2_0::EmulatedVehicleConnector>();
-    auto hal = std::make_unique<VendorVehicleHal>(store.get(), connector.get());
-    auto emulator = std::make_unique<vhal_v2_0::VehicleEmulator>(hal.get());
+    auto client = std::make_unique<vvhal_v1_0::impl::VehicleHalClient>();
+    auto hal = std::make_unique<vvhal_v1_0::impl::VendorVehicleHal>(store.get(), client.get());
     auto service = android::sp<vhal_v2_0::VehicleHalManager>::make(hal.get());
-    connector->setValuePool(hal->getValuePool());
 
+    configureRpcThreadpool(1, true); 
 
     android::hardware::configureRpcThreadpool(4, true /* callerWillJoin */);
 

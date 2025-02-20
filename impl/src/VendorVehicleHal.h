@@ -1,8 +1,13 @@
 #pragma once
 
-#include <vhal_v2_0/EmulatedVehicleHal.h>
+#include <vhal_v2_0/RecurrentTimer.h>
+#include <vhal_v2_0/VehicleHal.h>
+#include <vhal_v2_0/VehiclePropertyStore.h>
+
+#include "VehicleHalClient.h"
 
 namespace vhal_v2_0 = android::hardware::automotive::vehicle::V2_0;
+namespace vvhal_v1_0 = vendor::v::vehicle::V1_0;
 
 namespace vendor {
 namespace v {
@@ -11,17 +16,33 @@ namespace V1_0 {
 
 namespace impl {
 
-/** Implementation of VehicleHal that connected to emulator instead of real vehicle network. */
-class VendorVehicleHal : public EmulatedVehicleHal {
+    class VendorVehicleHal : public vhal_v2_0::VehicleHal
+    {
     public:
-        VendorVehicleHal(VehiclePropertyStore* propStore, VehicleHalClient* client,
-                           EmulatedUserHal* emulatedUserHal = nullptr);
+        VendorVehicleHal(vhal_v2_0::VehiclePropertyStore* propStore, VehicleHalClient* client);
+        ~VendorVehicleHal() = default;
     
-        VehiclePropValuePtr get(const VehiclePropValue& requestedPropValue,
-                                StatusCode* outStatus) override;
-        StatusCode set(const VehiclePropValue& propValue) override;
+        void onCreate() override;
+        std::vector<vhal_v2_0::VehiclePropConfig> listProperties() override;
+        VehiclePropValuePtr get(
+            const vhal_v2_0::VehiclePropValue& requestedPropValue,
+            vhal_v2_0::StatusCode* outStatus) override;
+        vhal_v2_0::StatusCode set(const vhal_v2_0::VehiclePropValue& propValue) override;
+        vhal_v2_0::StatusCode subscribe(int32_t property, float sampleRate) override;
+        vhal_v2_0::StatusCode unsubscribe(int32_t property) override;
     
+    private:
+        void onPropertyValue(const vhal_v2_0::VehiclePropValue& value, bool updateStatus);
+        void regPropsInPropStore();
+        void initPropsInPropStore();
+        void onContinuousPropertyTimer(const std::vector<int32_t>& properties);
+        bool isContinuousProperty(int32_t propId) const;
+    
+        vhal_v2_0::VehiclePropertyStore* mPropStore;
+        VehicleHalClient* mVehicleClient;
+        RecurrentTimer mRecurrentTimer;
     };
+    
 
 } // namespace impl
 

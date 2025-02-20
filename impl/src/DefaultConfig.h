@@ -10,7 +10,11 @@
 
 #include <map>
 
+#include "BackportedPropertyHelper.h"
+#include "PropertyUtils.h"
+
 using namespace android::hardware::automotive::vehicle::V2_0;
+using namespace android::hardware::automotive::vehicle::V2_0::impl;
 
 namespace vendor {
 namespace v {
@@ -23,11 +27,7 @@ namespace impl {
         const int32_t kVendorInteriorLightning = 
                 0xDEAF | VehiclePropertyGroup::VENDOR | VehicleArea::GLOBAL | VehiclePropertyType::INT32;
 
-
-
-        using ::android::hardware::automotive::vehicle::V2_0::backportedproperty::LOCATION_CHARACTERIZATION;
-        using ::android::hardware::automotive::vehicle::V2_0::backportedproperty::LocationCharacterization;
-        
+    
         struct ConfigDeclaration {
             VehiclePropConfig config;
         
@@ -39,7 +39,19 @@ namespace impl {
             std::map<int32_t, VehiclePropValue::RawValue> initialAreaValues;
         };
         
+        using ::android::hardware::automotive::vehicle::V2_0::backportedproperty::LOCATION_CHARACTERIZATION;
+        using ::android::hardware::automotive::vehicle::V2_0::backportedproperty::LocationCharacterization;
+        
+        
         const ConfigDeclaration kVehicleProperties[]{
+                {.config =
+                        {
+                                .prop = toInt(VehicleProperty::VENDOR_INTERIOR_LIGHTNING),
+                                .access = VehiclePropertyAccess::READ_WRITE,
+                                .changeMode = VehiclePropertyChangeMode::ON_CHANGE,
+                        },
+                .initialValue = {.int32Values = 1}},
+        
                 {.config =
                          {
                                  .prop = toInt(VehicleProperty::INFO_FUEL_CAPACITY),
@@ -1333,15 +1345,8 @@ namespace impl {
                                                          LOCATION_CHARACTERIZATION}},
                 },
         #endif  // ENABLE_GET_PROP_CONFIGS_BY_MULTIPLE_REQUESTS
-        {.config =
-                {
-                        .prop = toInt(VehicleProperty::VENDOR_INTERIOR_LIGHTNING), /* kVendorInteriorLightning, */
-                        .access = VehiclePropertyAccess::READ_WRITE,
-                        .changeMode = VehiclePropertyChangeMode::ON_CHANGE,
-                },
-        .initialValue = {.int32Values = 1}},
         };
-        
+                
 } // namespace impl
 
 } // namespace V1_0

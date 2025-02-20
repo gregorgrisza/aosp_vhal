@@ -6,7 +6,7 @@ cc_binary {
     relative_install_path: "hw",
     overrides: [
         "android.hardware.automotive.vehicle@2.0-service",
-        "android.hardware.automotive.vehicle@V1-emulator-service",
+        "android.hardware.automotive.vehicle@2.0-emulator-service",
     ],
 
     cflags: [

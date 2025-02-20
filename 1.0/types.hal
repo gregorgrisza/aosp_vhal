@@ -8,7 +8,7 @@ import android.hardware.automotive.vehicle@2.0;
 enum VehicleProperty: android.hardware.automotive.vehicle@2.0::VehicleProperty {
 
     /**
-     * For research needs 1s counter
+     * Interior lightning
      *
      * @change_mode VehiclePropertyChangeMode:ON_CHANGE
      * @access VehiclePropertyAccess:READ
